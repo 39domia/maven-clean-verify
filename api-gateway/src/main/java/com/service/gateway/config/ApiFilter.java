@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpStatus.PRECONDITION_REQUIRED;
 
 @Component
 @Slf4j(topic = "API-FILTER")
@@ -90,15 +91,15 @@ public class ApiFilter extends AbstractGatewayFilterFactory<ApiFilter.Config> {
     private Mono<Void> error(ServerHttpResponse response, String path, String message) {
         Map<String, Object> errors = new LinkedHashMap<>();
         errors.put("timestamp", new Date());
-        errors.put("status", HttpStatus.NOT_ACCEPTABLE.value());
+        errors.put("status", PRECONDITION_REQUIRED.value());
         errors.put("path", path);
-        errors.put("error", HttpStatus.NOT_ACCEPTABLE.getReasonPhrase());
+        errors.put("error", PRECONDITION_REQUIRED.getReasonPhrase());
         errors.put("message", message);
         byte[] bytes = new Gson().toJson(errors).getBytes(StandardCharsets.UTF_8);
 
         DataBuffer buffer = response.bufferFactory().wrap(bytes);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        response.setStatusCode(HttpStatus.NOT_ACCEPTABLE);
+        response.setStatusCode(PRECONDITION_REQUIRED);
 
         return response.writeWith(Mono.just(buffer));
     }

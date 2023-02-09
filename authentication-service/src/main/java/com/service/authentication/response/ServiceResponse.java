@@ -12,8 +12,8 @@ public class ServiceResponse extends ResponseEntity<ServiceResponse.Payload> {
      * @param status status code
      * @param message status code message
      */
-    public ServiceResponse(int status, String message) {
-        super(new Payload(status, message, null), HttpStatus.OK);
+    public ServiceResponse(HttpStatus status, String message) {
+        super(new Payload(status.value(), message, null), status);
     }
 
     /**
@@ -22,8 +22,8 @@ public class ServiceResponse extends ResponseEntity<ServiceResponse.Payload> {
      * @param message status code message
      * @param data data response
      */
-    public ServiceResponse(int status, String message, Object data) {
-        super(new Payload(status, message, data), HttpStatus.valueOf(status));
+    public ServiceResponse(HttpStatus status, String message, Object data) {
+        super(new Payload(status.value(), message, data), status);
     }
 
     @Value

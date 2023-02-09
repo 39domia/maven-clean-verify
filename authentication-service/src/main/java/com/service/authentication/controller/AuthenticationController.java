@@ -37,8 +37,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpStatus.ACCEPTED;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @Slf4j(topic = "AUTHENTICATION-CONTROLLER")
@@ -109,7 +108,7 @@ public class AuthenticationController {
     public ServiceResponse forgotPassword(@Parameter(description = "Email to receive Reset Token", required = true) @RequestParam("email") @Email String email) throws MessagingException, ResourceNotFoundException {
         log.info("Sending reset token to email {}", email);
         userService.sendResetTokenToEmail(email);
-        return new ServiceResponse(ACCEPTED.value(), Translator.toLocale("user-forgot-password-success"));
+        return new ServiceResponse(ACCEPTED, Translator.toLocale("user-forgot-password-success"));
     }
 
     @Operation(summary = "Reset Password")
@@ -118,6 +117,6 @@ public class AuthenticationController {
                                          @Parameter(description = "New password", required = true) @RequestParam("newPassword") String newPassword) throws ResourceNotFoundException {
         log.info("Processing reset and update new password for token {}", resetToken);
         userService.resetAndUpdatePassword(resetToken, newPassword);
-        return new ServiceResponse(OK.value(), Translator.toLocale("user-change-password-success"));
+        return new ServiceResponse(RESET_CONTENT, Translator.toLocale("user-change-password-success"));
     }
 }
